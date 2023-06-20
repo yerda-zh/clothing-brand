@@ -1,7 +1,6 @@
 import { initializeApp } from 'firebase/app';
 import { 
-    getAuth, 
-    signInWithRedirect, 
+    getAuth,
     signInWithPopup, 
     GoogleAuthProvider 
 } from 'firebase/auth';
@@ -23,14 +22,15 @@ const firebaseConfig = {
   
 const firebaseApp = initializeApp(firebaseConfig); //CRUD operations will be done using this
 
-const provider = new GoogleAuthProvider();
+const googleProvider = new GoogleAuthProvider();
 
-provider.setCustomParameters({
+googleProvider.setCustomParameters({
     prompt: 'select_account',
 });
 
 export const auth = getAuth();
-export const signInWithGooglePopup = () => signInWithPopup(auth, provider);
+
+export const signInWithGooglePopup = () => signInWithPopup(auth, googleProvider);
 export const db = getFirestore(); // direct database we will be using
 
 export const createUserDocumentFromAuth = async(userAuth)=>{
@@ -46,11 +46,11 @@ export const createUserDocumentFromAuth = async(userAuth)=>{
         const createdAt = new Date();
 
         try {
-            await setDoc(userDocRef, { //two parameters: user doc ref, and variables we want to pass
+            await setDoc(userDocRef, {
                 displayName,
                 email,
                 createdAt
-            });
+            }); //two parameters: user doc ref, and variables we want to pass
         } catch(error) {
             console.log('error creating the user', error.message);
         }
