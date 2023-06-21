@@ -1,8 +1,10 @@
+import { paste } from '@testing-library/user-event/dist/paste';
 import { initializeApp } from 'firebase/app';
 import { 
     getAuth,
     signInWithPopup, 
-    GoogleAuthProvider 
+    GoogleAuthProvider,
+    createUserWithEmailAndPassword 
 } from 'firebase/auth';
 import {
     getFirestore, 
@@ -33,7 +35,9 @@ export const auth = getAuth();
 export const signInWithGooglePopup = () => signInWithPopup(auth, googleProvider);
 export const db = getFirestore(); // direct database we will be using
 
-export const createUserDocumentFromAuth = async(userAuth)=>{
+export const createUserDocumentFromAuth = async(userAuth, addInformation={})=>{
+    if (!userAuth) return; // way of protecting our code
+
     const userDocRef=doc(db, 'users', userAuth.uid);
     // doc takes three parameters: database, collection, and identifier
     console.log(userDocRef);
@@ -49,7 +53,8 @@ export const createUserDocumentFromAuth = async(userAuth)=>{
             await setDoc(userDocRef, {
                 displayName,
                 email,
-                createdAt
+                createdAt,
+                ...addInformation,
             }); //two parameters: user doc ref, and variables we want to pass
         } catch(error) {
             console.log('error creating the user', error.message);
@@ -59,4 +64,10 @@ export const createUserDocumentFromAuth = async(userAuth)=>{
 
     return userDocRef;
     // if there is such user, return that
+}
+
+export const createAuthUserWithEmailAndPassword = async (email, password) => {
+    if (!email || !password) return; // way of protecting our code
+
+    return await createUserWithEmailAndPassword(auth, email, password);
 }
