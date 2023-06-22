@@ -16,15 +16,13 @@ const defaultSignIn = {
 };
 
 const SignInForm = () => {
-    const logGoogleUser = async () => {
-        const {user} = await signInWithGooglePopup();
-        await createUserDocumentFromAuth(user);
-        alert('Signed in with Google account');
-    };
-
     const [signInFields, setSignInFields] = useState(defaultSignIn);
     const { email, password } = signInFields;
     
+    const logGoogleUser = async () => {
+        await signInWithGooglePopup();
+    };
+
     const resetSignInFields = () => {
         setSignInFields(defaultSignIn);
     }
@@ -40,10 +38,8 @@ const SignInForm = () => {
         event.preventDefault();
 
         try {
-            const response = await signInUserWithEmail(email, password);
-            console.log(response);
+            const {user} = await signInUserWithEmail(email, password);
             resetSignInFields();
-            alert('Signed In');
         } catch(error) {
             switch(error.code){
                 case 'auth/wrong-password':
