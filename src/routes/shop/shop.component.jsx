@@ -10,6 +10,7 @@ const Shop =() => {
             {products.map((product) => (
                 <ProductCard key={product.id} product={product}/>
             ))}
+        {console.log(products)};
         </div>
     )
 }

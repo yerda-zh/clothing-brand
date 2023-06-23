@@ -1,6 +1,5 @@
 import {
-    signInWithGooglePopup, 
-    createUserDocumentFromAuth,
+    signInWithGooglePopup,
     signInUserWithEmail
 } from "../../utils/firebase/firebase.util";
 import Button from "../../components/button/button.component";
