@@ -7,7 +7,7 @@ import FormInput from "../../components/form-input/form-input.component";
 
 import { useState } from "react";
 
-import './sign-in-form.styles.scss';
+import {SignInContainer, Buttons} from './sign-in-form.styles.jsx';
 
 const defaultSignIn = {
     email: '',
@@ -37,7 +37,7 @@ const SignInForm = () => {
         event.preventDefault();
 
         try {
-            const {user} = await signInUserWithEmail(email, password);
+            await signInUserWithEmail(email, password);
             resetSignInFields();
         } catch(error) {
             switch(error.code){
@@ -54,7 +54,7 @@ const SignInForm = () => {
         }
     }
     return(
-        <div className="sign-in-container">
+        <SignInContainer>
             <h2>I already have an account</h2>
             <span>Sign in with your email and password</span>
             <form onSubmit={handleSignIn}>
@@ -74,14 +74,14 @@ const SignInForm = () => {
                     name="password" 
                     value={password}
                 />
-                <div className="buttons">
+                <Buttons>
                     <Button type="submit">Sign In</Button>
                     <Button type="button" buttonType={BUTTON_TYPE_CLASSES.google} onClick={logGoogleUser}>
                         Sign in with google
                     </Button>
-                </div>                  
+                </Buttons>                  
             </form>
-        </div>
+        </SignInContainer>
     );
 }
 export default SignInForm;
