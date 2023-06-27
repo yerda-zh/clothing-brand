@@ -9,9 +9,15 @@ export const NavigationContainer = styled.div`
   margin-bottom: 25px;
 `;
 export const LogoContainer = styled(Link)`
+  display: flex;
+  flex-direction: row;
   height: 100%;
-  width: 70px;
-  padding: 25px;
+  align-items: center;
+  span {
+    text-transform: uppercase;
+    color: #FFB743;
+    font-weight: bold;
+  }
 `;
 export const NavLinks = styled.div`
   width: 50%;

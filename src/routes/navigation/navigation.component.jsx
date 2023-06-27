@@ -17,7 +17,9 @@ const Navigation=()=>{
         <NavigationContainer>
             <LogoContainer to='/'>
                 <CrwnLogo className="logo"/>
+                <span>Crown Clothing</span>
             </LogoContainer>
+            {/* <span>Crown Clothing</span> */}
             <NavLinks>
                 <NavLink to='/shop'>
                     SHOP
