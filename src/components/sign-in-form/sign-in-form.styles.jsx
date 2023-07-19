@@ -9,7 +9,7 @@ export const SignInContainer = styled.div`
         margin: 10px 0;
     }
 `;
-export const Buttons = styled.div`
+export const ButtonsContainer = styled.div`
     display: flex;
     flex-flow: row nowrap;
     justify-content: space-around;

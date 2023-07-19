@@ -1,87 +1,86 @@
-import {
-    signInWithGooglePopup,
-    signInUserWithEmail
-} from "../../utils/firebase/firebase.util";
+
 import Button, {BUTTON_TYPE_CLASSES} from "../../components/button/button.component";
 import FormInput from "../../components/form-input/form-input.component";
 
+import { useDispatch } from "react-redux";
+import {
+    googleSignInStart,
+    emailSignInStart,
+  } from '../../store/user/user.action';
+
 import { useState } from "react";
 
-import {SignInContainer, Buttons} from './sign-in-form.styles.jsx';
+import {SignInContainer, ButtonsContainer} from './sign-in-form.styles.jsx';
 
-const defaultSignIn = {
+const defaultFormFields = {
     email: '',
     password: '',
-};
+  };
 
 const SignInForm = () => {
-    const [signInFields, setSignInFields] = useState(defaultSignIn);
-    const { email, password } = signInFields;
+    const dispatch = useDispatch();
+    const [formFields, setFormFields] = useState(defaultFormFields);
+    const { email, password } = formFields;
     
-    const logGoogleUser = async () => {
-        await signInWithGooglePopup();
+    const resetFormFields = () => {
+      setFormFields(defaultFormFields);
     };
 
-    const resetSignInFields = () => {
-        setSignInFields(defaultSignIn);
-    }
-    
-    const handleChangeSignIn = (event)=>{
-        const { name, value } = event.target;
+    const signInWithGoogle = async () => {
+      dispatch(googleSignInStart());
+    };
 
-        setSignInFields({...signInFields, [name]: value});
-    }
+    const handleSubmit = async (event) => {
+      event.preventDefault();
 
-    // main code
-    const handleSignIn = async(event)=>{
-        event.preventDefault();
+      try {
+        dispatch(emailSignInStart(email, password));
+        resetFormFields();
+      } catch (error) {
+        console.log("user sign in failed", error);
+      }
+    };
 
-        try {
-            await signInUserWithEmail(email, password);
-            resetSignInFields();
-        } catch(error) {
-            switch(error.code){
-                case 'auth/wrong-password':
-                    alert('Incorrect password, please try again');
-                    break;
-                case 'auth/user-not-found':
-                    alert('The user not found');
-                    break;
-                default:
-                    console.log(error);
+    const handleChange = (event) => {
+      const { name, value } = event.target;
 
-            }
-        }
-    }
-    return(
-        <SignInContainer>
-            <h2>I already have an account</h2>
-            <span>Sign in with your email and password</span>
-            <form onSubmit={handleSignIn}>
-                <FormInput
-                    label="Email"
-                    type="email" 
-                    required 
-                    onChange={handleChangeSignIn} 
-                    name="email" 
-                    value={email}
-                />
-                <FormInput 
-                    label="Password"
-                    type="password" 
-                    required 
-                    onChange={handleChangeSignIn} 
-                    name="password" 
-                    value={password}
-                />
-                <Buttons>
-                    <Button type="submit">Sign In</Button>
-                    <Button type="button" buttonType={BUTTON_TYPE_CLASSES.google} onClick={logGoogleUser}>
-                        Sign in with google
-                    </Button>
-                </Buttons>                  
-            </form>
-        </SignInContainer>
-    );
+      setFormFields({ ...formFields, [name]: value });
+    };
+
+    return (
+    <SignInContainer>
+      <h2>Already have an account?</h2>
+      <span>Sign in with your email and password</span>
+      <form onSubmit={handleSubmit}>
+        <FormInput
+          label='Email'
+          type='email'
+          required
+          onChange={handleChange}
+          name='email'
+          value={email}
+        />
+
+        <FormInput
+          label='Password'
+          type='password'
+          required
+          onChange={handleChange}
+          name='password'
+          value={password}
+        />
+        <ButtonsContainer>
+          <Button type='submit'>Sign In</Button>
+          <Button
+            buttonType={BUTTON_TYPE_CLASSES.google}
+            type='button'
+            onClick={signInWithGoogle}
+          >
+            Sign In With Google
+          </Button>
+        </ButtonsContainer>
+      </form>
+    </SignInContainer>
+  );
 }
 export default SignInForm;

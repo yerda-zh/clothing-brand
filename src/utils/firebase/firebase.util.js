@@ -1,114 +1,130 @@
 import { initializeApp } from 'firebase/app';
-import { 
-    getAuth,
-    signInWithPopup, 
-    GoogleAuthProvider,
-    createUserWithEmailAndPassword,
-    signInWithEmailAndPassword,
-    signOut,
-    onAuthStateChanged 
+import {
+  getAuth,
+  signInWithRedirect,
+  signInWithPopup,
+  GoogleAuthProvider,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut,
+  onAuthStateChanged,
 } from 'firebase/auth';
 import {
-    getFirestore, 
-    doc, 
-    getDoc, 
-    setDoc,
-    collection,
-    writeBatch,
-    query,
-    getDocs
+  getFirestore,
+  doc,
+  getDoc,
+  setDoc,
+  collection,
+  writeBatch,
+  query,
+  getDocs,
 } from 'firebase/firestore';
 
 const firebaseConfig = {
-    apiKey: "AIzaSyA9i-97hsl3lMi1QTcR9zwjZfERj8YAucU",
-    authDomain: "clothing-brand-db-a54bc.firebaseapp.com",
-    projectId: "clothing-brand-db-a54bc",
-    storageBucket: "clothing-brand-db-a54bc.appspot.com",
-    messagingSenderId: "842554595923",
-    appId: "1:842554595923:web:41f3ee66504491666884a6"
-  };
-  
-initializeApp(firebaseConfig); //CRUD operations will be done using this
+  apiKey: 'AIzaSyDDU4V-_QV3M8GyhC9SVieRTDM4dbiT0Yk',
+  authDomain: 'crwn-clothing-db-98d4d.firebaseapp.com',
+  projectId: 'crwn-clothing-db-98d4d',
+  storageBucket: 'crwn-clothing-db-98d4d.appspot.com',
+  messagingSenderId: '626766232035',
+  appId: '1:626766232035:web:506621582dab103a4d08d6',
+};
+
+const firebaseApp = initializeApp(firebaseConfig);
 
 const googleProvider = new GoogleAuthProvider();
 
 googleProvider.setCustomParameters({
-    prompt: 'select_account',
+  prompt: 'select_account',
 });
 
 export const auth = getAuth();
+export const signInWithGooglePopup = () =>
+  signInWithPopup(auth, googleProvider);
+export const signInWithGoogleRedirect = () =>
+  signInWithRedirect(auth, googleProvider);
 
-export const signInWithGooglePopup = () => signInWithPopup(auth, googleProvider);
-export const db = getFirestore(); // direct database we will be using
+export const db = getFirestore();
 
-export const addCollectionAndDocuments = async (collectionKey, objectsToAdd) => {
-    const collectionRef = collection(db, collectionKey);
-    const batch = writeBatch(db);
+export const addCollectionAndDocuments = async (
+  collectionKey,
+  objectsToAdd,
+  field
+) => {
+  const collectionRef = collection(db, collectionKey);
+  const batch = writeBatch(db);
 
-    objectsToAdd.forEach((object)=>{
-        const docRef=doc(collectionRef, object.title.toLowerCase());
-        batch.set(docRef, object);
-    });
+  objectsToAdd.forEach((object) => {
+    const docRef = doc(collectionRef, object.title.toLowerCase());
+    batch.set(docRef, object);
+  });
 
-    await batch.commit();
-    console.log('done');
-}
+  await batch.commit();
+  console.log('done');
+};
 
 export const getCategoriesAndDocuments = async () => {
-    const collectionRef = collection(db, 'categories');
-    const q = query(collectionRef);
+  const collectionRef = collection(db, 'categories');
+  const q = query(collectionRef);
 
-    const querySnapshot = await getDocs(q);
-    // snapshots are actual data we are getting from the database
-    return querySnapshot.docs.map((docSnapshot)=>docSnapshot.data());
-}
+  const querySnapshot = await getDocs(q);
+  return querySnapshot.docs.map((docSnapshot) => docSnapshot.data());
+};
 
+export const createUserDocumentFromAuth = async (
+  userAuth,
+  additionalInformation = {}
+) => {
+  if (!userAuth) return;
 
+  const userDocRef = doc(db, 'users', userAuth.uid);
 
+  const userSnapshot = await getDoc(userDocRef);
 
-export const createUserDocumentFromAuth = async(userAuth, addInformation={})=>{
-    if (!userAuth) return; // way of protecting our code
+  if (!userSnapshot.exists()) {
+    const { displayName, email } = userAuth;
+    const createdAt = new Date();
 
-    const userDocRef=doc(db, 'users', userAuth.uid);
-    // doc takes three parameters: database, collection, and identifier
-    console.log(userDocRef);
+    try {
+      await setDoc(userDocRef, {
+        displayName,
+        email,
+        createdAt,
+        ...additionalInformation,
+      });
+    } catch (error) {
+      console.log('error creating the user', error.message);
+    }
+  }
 
-    const userSnapshot= await getDoc(userDocRef);
-    console.log(userSnapshot);
-
-    if(!userSnapshot.exists()){
-        const {displayName, email} = userAuth;
-        const createdAt = new Date();
-
-        try {
-            await setDoc(userDocRef, {
-                displayName,
-                email,
-                createdAt,
-                ...addInformation,
-            }); //two parameters: user doc ref, and variables we want to pass
-        } catch(error) {
-            console.log('error creating the user', error.message);
-        }
-    }// userSnapshot exists return false when there is no such user, the !makes it opposite so it would return true 
-    // so that we can create an if statement
-
-    return userDocRef;
-    // if there is such user, return that
-}
+  return userSnapshot;
+};
 
 export const createAuthUserWithEmailAndPassword = async (email, password) => {
-    if (!email || !password) return; // way of protecting our code
+  if (!email || !password) return;
 
-    return await createUserWithEmailAndPassword(auth, email, password);
-}
+  return await createUserWithEmailAndPassword(auth, email, password);
+};
 
-export const signInUserWithEmail = async (email, password) => {
-    if (!email || !password) return;
+export const signInAuthUserWithEmailAndPassword = async (email, password) => {
+  if (!email || !password) return;
 
-    return await signInWithEmailAndPassword(auth, email, password);
-}
+  return await signInWithEmailAndPassword(auth, email, password);
+};
 
 export const signOutUser = async () => await signOut(auth);
 
-export const onAuthStateChangedListener = (callback) => onAuthStateChanged(auth, callback);
+export const onAuthStateChangedListener = (callback) =>
+  onAuthStateChanged(auth, callback);
+
+export const getCurrentUser = () => {
+  return new Promise((resolve, reject) => {
+    const unsubscribe = onAuthStateChanged(
+      auth,
+      (userAuth) => {
+        unsubscribe();
+        resolve(userAuth);
+      },
+      reject
+    );
+  });
+};
