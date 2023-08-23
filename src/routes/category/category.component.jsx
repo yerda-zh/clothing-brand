@@ -2,12 +2,12 @@ import { useParams } from 'react-router-dom';
 import { useState, useEffect, Fragment } from 'react';
 
 import { useSelector } from 'react-redux';
-import { selectCategoriesMap } from '../../store/categories/category.selector.js';
+import { selectCategoriesMap } from '../../store/categories/category.selector';
 
-import {CategoryContainer, CategoryTitle} from './category.styles.jsx';
+import {CategoryContainer, CategoryTitle} from './category.styles';
 import ProductCard from '../../components/product-card/product-card.component';
-import { selectIsCategoriesLoading } from '../../store/categories/category.selector.js';
-import Spinner from '../../components/spinner/spinner.component.jsx';
+import { selectIsCategoriesLoading } from '../../store/categories/category.selector';
+import Spinner from '../../components/spinner/spinner.component';
 
 const Category=()=>{
     const {category} = useParams();
