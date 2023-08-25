@@ -1,4 +1,4 @@
-import {CategoriesContainer} from './menu.styles.jsx';
+import {CategoriesContainer} from './menu.styles';
 import MenuItem from '../menu-item/menu-item.component';
 
 const categories = [

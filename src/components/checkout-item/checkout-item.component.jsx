@@ -10,7 +10,7 @@ import {
     Arrow, 
     RemoveButton, 
     Quantity
-} from './checkout-item.styles.jsx';
+} from './checkout-item.styles';
 
 const CheckoutItem = ({item}) => {
     const dispatch = useDispatch();

@@ -1,4 +1,4 @@
-import {ProductCardContainer, Name, Price, Footer} from './product-card.styles.jsx';
+import {ProductCardContainer, Name, Price, Footer} from './product-card.styles';
 
 import Button, {BUTTON_TYPE_CLASSES} from '../button/button.component';
 

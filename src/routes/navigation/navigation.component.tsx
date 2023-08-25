@@ -5,7 +5,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { selectCurrentUser } from "../../store/user/user.selector";
 
 import {ReactComponent as CrwnLogo} from '../../assets/crown.svg';
-import {NavigationContainer, NavLinks, NavLink, LogoContainer} from './navigation.styles.jsx';
+import {NavigationContainer, NavLinks, NavLink, LogoContainer} from './navigation.styles';
 
 import { signOutStart } from "../../store/user/user.action";
 import CartIcon from "../../components/cart-icon/cart-icon.component";
@@ -25,13 +25,12 @@ const Navigation=()=>{
                 <CrwnLogo className="logo"/>
                 <span>Crown Clothing</span>
             </LogoContainer>
-            {/* <span>Crown Clothing</span> */}
             <NavLinks>
                 <NavLink to='/shop'>
                     SHOP
                 </NavLink>
                 {currentUser ? (
-                    <NavLink as='span' onClick={signOutUser}>SIGN OUT</NavLink>
+                    <NavLink as='span' to='' onClick={signOutUser}>SIGN OUT</NavLink>
                 ) : (
                     <NavLink to='/auth'>
                         SIGN IN
